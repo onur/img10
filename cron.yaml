@@ -1,0 +1,4 @@
+cron:
+- description: remove old images
+  url: /tasks/remove
+  schedule: every 30 minutes
