@@ -30,6 +30,9 @@ BUCKET_NAME = os.environ.get('BUCKET_NAME',
                              app_identity.get_default_gcs_bucket_name())
 
 
+ACME_VERIFICATION = ""
+
+
 def generate_id(size=7):
     chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
     id = list()
@@ -163,10 +166,19 @@ class Upload(webapp2.RequestHandler):
             'img_url': self.request.host_url + '/' + id + extension
         }))
 
+
+class LetsEncrypt(webapp2.RequestHandler):
+    """ LetsEncrypt handler to verify ACME requests """
+    def get(self):
+        self.response.headers['Content-Type'] = 'text/plain'
+        self.response.write(ACME_VERIFICATION)
+
+
 app = webapp2.WSGIApplication([
     ('/', Main),
     (r'/(\w+)\.(jpg|png)', Image),
     (r'/t/(\w+)\.jpg', Thumbnail),
     ('/upload', Upload),
     ('/tasks/remove', RemoveOldImages),
+    ('/.well-known/acme-challenge/.*?', LetsEncrypt),
 ], debug=True)
