@@ -96,7 +96,8 @@
         document.getElementById("uploadform").submit();
     };
     new Dropzone(document.body, {
-        url: "/upload"
+        url: "/upload",
+        paramName: "img"
     });
 </script>
 </html>
