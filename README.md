@@ -8,6 +8,8 @@ Storage.
 You can use `./screenshot` script to take screenshots with scrot and upload
 them to img10.xyz.
 
+![screenshot sharing](https://i.imgur.com/MhuGxwj.png "screenshot sharing")
+
 ## Installation
 
 Clone repository, install requirements with pip and download
