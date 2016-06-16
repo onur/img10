@@ -1,4 +1,4 @@
 cron:
 - description: remove old images
   url: /tasks/remove
-  schedule: every 30 minutes
+  schedule: every 3 hours
