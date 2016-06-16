@@ -11,3 +11,4 @@ libraries:
 handlers:
 - url: /.*
   script: img10.app
+  secure: always
