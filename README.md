@@ -5,10 +5,16 @@ Storage.
 
 ## Sharing Screenshots Temporarily
 
-You can use `./screenshot` script to take screenshots with scrot and upload
+You can use `screenshot` script to take screenshots with scrot and upload
 them to img10.xyz.
 
-![screenshot sharing](https://i.imgur.com/MhuGxwj.png "screenshot sharing")
+![screenshot sharing](https://i.imgur.com/VP3cU91.png "screenshot sharing")
+
+Or you can use curl to upload files directly with:
+
+```sh
+curl -s -F "img=@myimage.png" https://img10.xyz/upload
+```
 
 ## Installation
 
