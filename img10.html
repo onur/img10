@@ -12,12 +12,15 @@
             body {
                 text-align: center;
             }
-            div.main {
-                padding-top: 120px;
+            @media screen and (min-width: 35.5em) {
+                div.main {
+                    padding-top: 120px;
+                }
             }
             .img-ten-upload-card.mdl-card {
                 margin: 0 auto;
-                width: 512px;
+                width: 100%;
+                max-width: 512px;
                 text-align: left;
             }
             .img-ten-upload-card > .mdl-card__title {
