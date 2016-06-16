@@ -3,8 +3,12 @@
 Temporary image hosting service based on Google App Engine and Google Cloud
 Storage.
 
+## Sharing Screenshots Temporarily
 
-### Installation
+You can use `./screenshot` script to take screenshots with scrot and upload
+them to img10.xyz.
+
+## Installation
 
 Clone repository, install requirements with pip and download
 [Google App Engine SDK](https://cloud.google.com/appengine/downloads#Google_App_Engine_SDK_for_Python)
@@ -20,8 +24,6 @@ $PATH_TO_APPENGINE_SDK/dev_appserver.py .
 Your instance should be available in: `http://localhost:8080`
 
 
-### TODO
+## TODO
 
 - [ ] Drag and drop support.
-- [ ] Reply only image link for curl, people can easily upload images from
-  command line.

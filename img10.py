@@ -160,11 +160,16 @@ class Upload(webapp2.RequestHandler):
                      mime=mime,
                      thumbnail=thumbnail)
         img_key = img.put()
+        img_url = self.request.host_url + '/' + id + extension
 
-        self.response.write(TEMPLATE.render({
-            'img_id': img_key.id(),
-            'img_url': self.request.host_url + '/' + id + extension
-        }))
+        if self.request.headers.get('User-Agent').find('curl') >= 0:
+            self.response.headers['Content-Type'] = 'text/plain'
+            self.response.write(img_url + "\n")
+        else:
+            self.response.write(TEMPLATE.render({
+                'img_id': img_key.id(),
+                'img_url': self.request.host_url + '/' + id + extension
+            }))
 
 
 class LetsEncrypt(webapp2.RequestHandler):

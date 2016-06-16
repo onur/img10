@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+if ! scrot -v 2>&1 > /dev/null; then
+    exit 1
+fi
+
+TEMP_FILE=$(mktemp --suffix=.png)
+
+scrot "$@" $TEMP_FILE
+curl -s -F "img=@$TEMP_FILE" https://img10.xyz/upload
+rm $TEMP_FILE
