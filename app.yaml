@@ -9,6 +9,12 @@ libraries:
   version: latest
 
 handlers:
+- url: /favicon\.ico
+  static_files: favicon.ico
+  upload: favicon\.ico
+- url: /img10\.png
+  static_files: img10.png
+  upload: img10\.png
 - url: /.*
   script: img10.app
   secure: always
