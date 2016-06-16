@@ -1,87 +1,103 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title>img10 - Temporary Image Hosting</title>
-        <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" type="text/css" media="screen" title="no title" charset="utf-8"/>
-        <link rel="shortcut icon" href="/favicon.ico"/>
-        <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
-        <style type="text/css" media="screen">
-            body {
-                text-align: center;
-            }
-            @media screen and (min-width: 35.5em) {
-                div.main {
-                    padding-top: 120px;
-                }
-            }
-            .img-ten-upload-card.mdl-card {
-                margin: 0 auto;
-                width: 100%;
-                max-width: 512px;
-                text-align: left;
-            }
-            .img-ten-upload-card > .mdl-card__title {
-                color: #fff;
-                height: 176px;
-                background: url('/img10.png') bottom right 5% no-repeat #3E4EB8;
-            }
-            .img-ten-upload-card > .mdl-card__menu {
-                color: #fff;
-            }
-        </style>
-    </head>
-    <body>
-        <div class="main">
-            <form action="/upload" enctype="multipart/form-data" method="post" id="uploadform">
-                <div class="img-ten-upload-card mdl-card mdl-shadow--2dp">
-                    <div class="mdl-card__title">
-                        <h1 class="mdl-card__title-text">Temporary Image Hosting</h1>
-                    </div>
-                    <div class="mdl-card__supporting-text">
-                      {% if error %}
-                      <p><strong>{{ error }}</strong></p>
-                      {% endif %}
-                      {% if not img_id %}
-                        Your image will be hosted for 30 minutes and will be deleted afterward.
-                      {% endif %}
-                      {% if img_id %}
-                      <a href="{{img_url}}"><img src="/t/{{ img_id }}.jpg" alt=""/></a>
-                      {% endif %}
-                    </div>
-                    <div class="mdl-card__actions mdl-card--border">
-                      {% if img_url %}
-                      <p><a href="{{img_url}}">{{ img_url }}</a></p>
-                      {% endif %}
-                      <input type="file" name="img" id="inputfile" accept=".jpg,.png" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                      <script type="text/javascript" charset="utf-8">
-                          // hide file input with javascript
-                          // input will be visible if javascript is disabled
-                          document.getElementById("inputfile").style.display = "none";
-                      </script>
-                      <input type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary" id="upload-button" value="Upload">
-                      <div id="upload-progress" class="mdl-progress mdl-js-progress mdl-progress__indeterminate" style="display: none;"></div>
-                    </div>
-                    <div class="mdl-card__menu">
-                        <a href="https://github.com/onur/img10" class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
-                            <i class="fa fa-github" aria-hidden="true"></i>
-                        </a>
-                    </div>
-                </div>
-            </form>
+<head>
+    <meta charset="UTF-8">
+    <title>img10 - Temporary Image Hosting</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="HandheldFriendly" content="True">
+    <meta name="MobileOptimized" content="320">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.1.3/material.indigo-pink.min.css" type="text/css"
+          media="screen" title="no title" charset="utf-8"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css"
+          type="text/css" media="screen" title="no title" charset="utf-8"/>
+    <link rel="shortcut icon" href="/favicon.ico"/>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/min/dropzone.min.js"></script>
+    <script defer src="https://code.getmdl.io/1.1.3/material.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dropzone/4.3.0/min/dropzone.min.css">
+    <meta name="distribution" content="global"/>
+    <meta name="robots" content="follow, all"/>
+    <style type="text/css" media="screen">
+        body {
+            text-align: center;
+        }
+
+        div.main {
+            padding-top: 120px;
+        }
+
+        .img-ten-upload-card.mdl-card {
+            margin: 0 auto;
+            width: 512px;
+            text-align: left;
+        }
+
+        .img-ten-upload-card > .mdl-card__title {
+            color: #fff;
+            height: 176px;
+            background: url('/img10.png') bottom right 5% no-repeat #3E4EB8;
+        }
+
+        .img-ten-upload-card > .mdl-card__menu {
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+<div id="previews" class="dropzone-previews"></div>
+<div class="main">
+    <form action="/upload" enctype="multipart/form-data" method="post" id="uploadform">
+        <div class="img-ten-upload-card mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__title">
+                <h1 class="mdl-card__title-text">Temporary Image Hosting</h1>
+            </div>
+            <div class="mdl-card__supporting-text">
+                {% if error %}
+                <p><strong>{{ error }}</strong></p>
+                {% endif %}
+                {% if not img_id %}
+                Your image will be hosted for 30 minutes and will be deleted afterward.
+                {% endif %}
+                {% if img_id %}
+                <a href="{{img_url}}"><img src="/t/{{ img_id }}.jpg" alt=""/></a>
+                {% endif %}
+            </div>
+            <div class="mdl-card__actions mdl-card--border">
+                {% if img_url %}
+                <p><a href="{{img_url}}">{{ img_url }}</a></p>
+                {% endif %}
+                <input type="file" name="img" id="inputfile" accept=".jpg,.png" hidden>
+                <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--primary"
+                        id="upload-button">
+                    Upload
+                </button>
+                <div id="upload-progress" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"
+                     style="display: none;"></div>
+            </div>
+            <div class="mdl-card__menu">
+                <a href="https://github.com/onur/img10"
+                   class="mdl-button mdl-button--icon mdl-js-button mdl-js-ripple-effect">
+                    <i class="fa fa-github" aria-hidden="true"></i>
+                </a>
+            </div>
         </div>
-    </body>
-    <script type="text/javascript" charset="utf-8">
-        document.getElementById("upload-button").onclick = function() {
-            document.getElementById("inputfile").click();
-            return false;
-        };
-        document.getElementById("inputfile").onchange = function() {
-            document.getElementById("upload-button").style.display = "none";
-            document.getElementById("upload-progress").style.display = "block";
-            document.getElementById("uploadform").submit();
-        };
-    </script>
+    </form>
+</div>
+</body>
+<script type="text/javascript" charset="utf-8">
+    var lastTarget = null;
+    document.getElementById("upload-button").onclick = function () {
+        document.getElementById("inputfile").click();
+        return false;
+    };
+    document.getElementById("inputfile").onchange = function () {
+        document.getElementById("upload-button").style.display = "none";
+        document.getElementById("upload-progress").style.display = "block";
+        document.getElementById("uploadform").submit();
+    };
+    new Dropzone(document.body, {
+        url: "/upload",
+        paramName: "img"
+    });
+</script>
 </html>
