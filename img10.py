@@ -17,7 +17,7 @@ import cloudstorage as gcs
 
 
 # Images removed after timeout (in seconds)
-TIMEOUT = 1800
+TIMEOUT = 86400
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
