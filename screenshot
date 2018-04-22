@@ -9,5 +9,5 @@ fi
 TEMP_FILE=$(mktemp --suffix=.png)
 
 scrot "$@" $TEMP_FILE
-curl -s -F "img=@$TEMP_FILE" https://img10.xyz/upload
+curl -s -F "img=@$TEMP_FILE" https://img10-1342.appspot.com/upload
 rm $TEMP_FILE
