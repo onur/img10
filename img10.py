@@ -133,6 +133,15 @@ class Upload(webapp2.RequestHandler):
             elif image.format == images.PNG:
                 mime = "image/png"
                 extension = ".png"
+            elif image.format == images.GIF:
+                mime = "image/gif"
+                extension = ".gif"
+            elif image.format == images.BMP:
+                mime = "image/bmp"
+                extension = ".bmp"
+            elif image.format == images.WEBP:
+                mime = "image/webp"
+                extension = ".webp"
         except:
             self.response.set_status(500)
             self.response.write(TEMPLATE.render({
@@ -181,7 +190,7 @@ class LetsEncrypt(webapp2.RequestHandler):
 
 app = webapp2.WSGIApplication([
     ('/', Main),
-    (r'/(\w+)\.(jpg|png)', Image),
+    (r'/(\w+)\.(jpg|png|gif|bmp|webp)', Image),
     (r'/t/(\w+)\.jpg', Thumbnail),
     ('/upload', Upload),
     ('/tasks/remove', RemoveOldImages),
