@@ -50,24 +50,6 @@ impl SuperShare {
         (key, iv)
     }
 
-    //fn download(&self, key: String, iv: String) -> String {
-    //    let mut cipher = Cfb8::<Aes128>::new_from_slices(key.as_bytes(), iv.as_bytes()).unwrap();
-    //    let mut file = File::open(self.path.join(&key)).unwrap();
-    //    let mut output_file = File::create("/tmp/output").unwrap();
-
-    //    loop {
-    //        let mut buffer = [0; 128];
-    //        let n = file.read(&mut buffer).unwrap();
-    //        cipher.decrypt(&mut buffer[0..n]);
-    //        output_file.write_all(&buffer[0..n]).unwrap();
-    //        if n < buffer.len() {
-    //            break;
-    //        }
-    //    }
-
-    //    "OK".to_string()
-    //}
-
     fn download(&self, key: String, iv: String, filename: String) -> Response<warp::hyper::Body> {
         let cipher = Cfb8::<Aes128>::new_from_slices(key.as_bytes(), iv.as_bytes()).unwrap();
         let metadata = metadata(self.path.join(&key)).unwrap();
