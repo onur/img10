@@ -86,7 +86,7 @@ impl SuperShare {
                 }
             });
 
-        let download = warp::path!(String / String / String).map({
+        let download = warp::path!(String / String / String).and(warp::get()).map({
             let ss = ss.clone();
             move |key, iv, filename| ss.download(key, iv, filename)
         });
