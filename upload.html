@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Super Share!</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css" integrity="sha256-UDtbUHqpVVfXmdJcQVU/bfDEr9xldf3Dbd0ShD0Uf/Y=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.4/css/all.min.css" integrity="sha256-mUZM63G8m73Mcidfrv5E+Y61y7a12O5mW4ezU3bxqW4=" crossorigin="anonymous">
+    <style>
+    </style>
+  </head>
+  <body>
+    <section class="section">
+      <div class="container has-text-centered">
+        <h1 class="title">
+          Super Share!
+        </h1>
+        <p class="subtitle">
+          Temporarly share files!
+        </p>
+        <progress class="progress is-large is-info is-hidden" max="100" id="progress">Uploading</progress>
+        <div class="file is-centered is-boxed is-info is-large" id="file-div">
+          <label class="file-label">
+            <input class="file-input" type="file" name="file" id="file">
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fas fa-upload"></i>
+              </span>
+              <span class="file-label">
+                Drag your files here, or click to upload!
+              </span>
+            </span>
+          </label>
+        </div>
+        <input class="input mt-5 is-large is-hidden" type="text" id="file-link">
+      </div>
+    </section>
+  </body>
+  <script>
+    document.getElementById('file').addEventListener('change', (event) => {
+      const progress_bar = document.getElementById('progress');
+      const file_div = document.getElementById('file-div');
+      const file_link = document.getElementById('file-link');
+      file_div.classList.add('is-hidden');
+      file_link.classList.add('is-hidden');
+      progress_bar.classList.remove('is-hidden');
+
+      const reader = new FileReader();
+      fetch('/' + event.target.files[0].name, {
+        method: 'PUT',
+        body: event.target.files[0],
+      }).then((r) =>r.text())
+      .then(text => {
+        file_div.classList.remove('is-hidden');
+        progress_bar.classList.add('is-hidden');
+        file_link.classList.remove('is-hidden');
+        file_link.value = text;
+      });
+    });
+  </script>
+</html>
