@@ -16,8 +16,9 @@ use tokio::fs::{metadata, File};
 use tokio::io::AsyncWriteExt;
 use warp::http::Response;
 use warp::{Buf, Filter};
+use std::time::{Duration, SystemTime};
 
-type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
+pub type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
 pub struct SuperShare {
     path: PathBuf,
@@ -144,5 +145,26 @@ impl Stream for Decipher {
         } else {
             Poll::Ready(None)
         }
+    }
+}
+
+async fn remove_old_files(path: impl AsRef<Path>) -> Result<()> {
+    let mut entries = tokio::fs::read_dir(path).await?;
+    let now = SystemTime::now();
+    while let Some(entry) = entries.next_entry().await? {
+        let created = entry.metadata().await?.modified()?;
+        if now.duration_since(created)?.as_secs() > 3600 * 24 * 7{
+            tokio::fs::remove_file(entry.path()).await?;
+        }
+    }
+    Ok(())
+}
+
+pub async fn check_and_remove_old_files(path: impl AsRef<Path>) {
+    loop {
+        if let Err(e) = remove_old_files(path.as_ref()).await {
+            error!("Failed to remove old files: {}", e);
+        }
+        tokio::time::sleep(Duration::from_secs(3600 * 24)).await;
     }
 }
