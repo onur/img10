@@ -105,9 +105,9 @@ impl SuperShare {
         });
 
         #[cfg(not(debug_assertions))]
-        let index = warp::path::end().and(warp::get()).map(|| include_str!("../upload.html"));
+        let index = warp::path::end().and(warp::get()).map(|| include_str!("upload.html"));
         #[cfg(debug_assertions)]
-        let index = warp::path::end().and(warp::get()).and(warp::fs::file("upload.html"));
+        let index = warp::path::end().and(warp::get()).and(warp::fs::file("src/upload.html"));
 
         let routes = upload.or(download).or(index);
         warp::serve(routes).run(([0, 0, 0, 0], 3030)).await
