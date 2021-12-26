@@ -37,7 +37,7 @@ impl SuperShare {
     fn upload(&self, mut body: impl Buf) -> (String, String) {
         let (key, iv) = (self.gen_id(), self.gen_id());
         let mut cipher = Cfb8::<Aes128>::new_from_slices(key.as_bytes(), iv.as_bytes()).unwrap();
-        let mut file = File::create(self.path.join(&key)).unwrap();
+        let mut file = File::create(self.path.join(&iv)).unwrap();
 
         while body.has_remaining() {
             let mut chunk = body.chunk().to_vec();
@@ -52,8 +52,8 @@ impl SuperShare {
 
     fn download(&self, key: String, iv: String, filename: String) -> Response<warp::hyper::Body> {
         let cipher = Cfb8::<Aes128>::new_from_slices(key.as_bytes(), iv.as_bytes()).unwrap();
-        let metadata = metadata(self.path.join(&key)).unwrap();
-        let file = File::open(self.path.join(&key)).unwrap();
+        let metadata = metadata(self.path.join(&iv)).unwrap();
+        let file = File::open(self.path.join(&iv)).unwrap();
         let decipher = Decipher { cipher, file };
         let body = warp::hyper::Body::wrap_stream(decipher);
 
