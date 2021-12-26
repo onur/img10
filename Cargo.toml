@@ -5,7 +5,7 @@ edition = "2021"
 
 [dependencies]
 warp = "0.3"
-tokio = { version = "1", features = ["full"] }
+tokio = { version = "1", features = ["rt", "macros"] }
 rand = "0.8"
 aes = "0.7"
 cfb8 = "0.7"
