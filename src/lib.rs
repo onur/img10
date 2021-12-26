@@ -12,11 +12,11 @@ use std::io::Read;
 use std::path::{Path, PathBuf};
 use std::pin::Pin;
 use std::sync::Arc;
+use std::time::{Duration, SystemTime};
 use tokio::fs::{metadata, File};
 use tokio::io::AsyncWriteExt;
 use warp::http::Response;
 use warp::{Buf, Filter};
-use std::time::{Duration, SystemTime};
 
 pub type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
@@ -153,7 +153,7 @@ async fn remove_old_files(path: impl AsRef<Path>) -> Result<()> {
     let now = SystemTime::now();
     while let Some(entry) = entries.next_entry().await? {
         let created = entry.metadata().await?.modified()?;
-        if now.duration_since(created)?.as_secs() > 3600 * 24 * 7{
+        if now.duration_since(created)?.as_secs() > 3600 * 24 * 7 {
             tokio::fs::remove_file(entry.path()).await?;
         }
     }
