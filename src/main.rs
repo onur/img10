@@ -1,6 +1,6 @@
 use supershare::SuperShare;
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() {
     env_logger::init();
     let supershare = SuperShare::new("/tmp/supershare");
