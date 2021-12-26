@@ -97,7 +97,7 @@ impl SuperShare {
                 }
                 let (key, iv) = ss.upload(body).await;
                 if let Some(host) = host {
-                    Ok(format!("http://{}/{}/{}/{}\n", host, key, iv, path))
+                    Ok(format!("https://{}/{}/{}/{}\n", host, key, iv, path))
                 } else {
                     Ok(format!("{}/{}/{}\n", key, iv, path))
                 }
