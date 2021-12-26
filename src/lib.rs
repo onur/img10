@@ -6,6 +6,7 @@ use cfb8::Cfb8;
 use futures::stream::Stream;
 use futures::task::{Context, Poll};
 use rand::Rng;
+use std::error;
 use std::fs::{metadata, File};
 use std::io::{Read, Write};
 use std::path::{Path, PathBuf};
@@ -13,6 +14,9 @@ use std::pin::Pin;
 use std::sync::Arc;
 use warp::http::Response;
 use warp::{Buf, Filter};
+use log::error;
+
+type Result<T> = std::result::Result<T, Box<dyn error::Error>>;
 
 pub struct SuperShare {
     path: PathBuf,
@@ -50,18 +54,19 @@ impl SuperShare {
         (key, iv)
     }
 
-    fn download(&self, key: String, iv: String, filename: String) -> Response<warp::hyper::Body> {
-        let cipher = Cfb8::<Aes128>::new_from_slices(key.as_bytes(), iv.as_bytes()).unwrap();
-        let metadata = metadata(self.path.join(&iv)).unwrap();
-        let file = File::open(self.path.join(&iv)).unwrap();
+    fn download(&self, key: String, iv: String, filename: String) -> Result<Response<warp::hyper::Body>> {
+        let file = File::open(self.path.join(&iv))?;
+        let metadata = metadata(self.path.join(&iv))?;
+        let cipher = Cfb8::<Aes128>::new_from_slices(key.as_bytes(), iv.as_bytes())
+            .map_err(|e| format!("Failed to create cipher: {}", e))?;
         let decipher = Decipher { cipher, file };
         let body = warp::hyper::Body::wrap_stream(decipher);
 
-        Response::builder()
+        Ok(Response::builder()
             .header("Content-Length", metadata.len())
             .header("Content-Type", mime_types::from_file_name(&filename))
             .body(body)
-            .unwrap()
+            .unwrap())
     }
 
     pub async fn serve(self) {
@@ -88,7 +93,15 @@ impl SuperShare {
 
         let download = warp::path!(String / String / String).and(warp::get()).map({
             let ss = ss.clone();
-            move |key, iv, filename| ss.download(key, iv, filename)
+            move |key, iv, filename| {
+                ss.download(key, iv, filename).unwrap_or_else(|e| {
+                    error!("Download: {}", e);
+                    Response::builder()
+                        .status(404)
+                        .body("".into())
+                        .unwrap()
+                })
+            }
         });
 
         let routes = upload.or(download);
@@ -102,7 +115,7 @@ struct Decipher {
 }
 
 impl Stream for Decipher {
-    type Item = Result<bytes::Bytes, String>;
+    type Item = std::result::Result<bytes::Bytes, String>;
 
     fn poll_next(mut self: Pin<&mut Self>, _cx: &mut Context<'_>) -> Poll<Option<Self::Item>> {
         let mut buffer = [0; 4096];
